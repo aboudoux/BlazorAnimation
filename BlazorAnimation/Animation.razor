@@ -1,50 +1,56 @@
-﻿@using Microsoft.JSInterop
+﻿@using Microsoft.Extensions.Options
+@using Microsoft.JSInterop
 @inject IJSRuntime JsRuntime
-<div @ref="divElementReference" class="@Animate @AnimationType customAnimation">
+@inject IOptionsSnapshot<AnimationOptions> OptionsSnapshot
+
+<div @ref="DivElementReference" class="@Animate @AnimationType" @attributes="@AdditionalAttributes" style="@($"animation-duration: {Speed.TotalMilliseconds}ms;animation-delay : {Delay.TotalMilliseconds}ms;animation-iteration-count: {IterationCount};");">
     @ChildContent
 </div>
 
 @code {
 
-    ElementReference divElementReference;
+    protected override void OnParametersSet() => ApplyConfiguration();
 
     protected override void OnAfterRender(bool firstRender) {
-        base.OnAfterRender(firstRender);
         if (firstRender) {
             var dotNetReference = DotNetObjectReference.Create(this);
-            JsRuntime.InvokeVoidAsync("AnimatedComponent.animationend", divElementReference, dotNetReference);
+            JsRuntime.InvokeVoidAsync("AnimatedComponent.animationend", DivElementReference, dotNetReference);
         }
     }
 
-    private string Animate => Active ? "animated" : string.Empty;
+    private ElementReference DivElementReference;
 
-    private string AnimationType => Active ? Effect?.Name : string.Empty;
+    private string Animate => Enabled ? "animated" : string.Empty;
+
+    private string AnimationType => Enabled ? Effect?.Name : string.Empty;
+
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    [Parameter] public bool Enabled { get; set; } = true;
+
+    [Parameter] public string OptionsName { get; set; } = Options.DefaultName;
+
+    [Parameter] public AnimationEffect Effect { get; set; }
+
+    [Parameter] public TimeSpan Delay { get; set; } = BlazorAnimation.Delay.None;
+
+    [Parameter] public TimeSpan Speed { get; set; } = BlazorAnimation.Speed.Slow;
 
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
-
-    [Parameter]
-    public bool Active { get; set; } = true;
-
-    [Parameter]
-    public CssEffect Effect { get; set; }
-
-    [Parameter]
-    public TimeSpan Delay { get; set; } = BlazorAnimation.Delay.None;
-
-    [Parameter]
-    public TimeSpan Speed { get; set; } = BlazorAnimation.Speed.Slow;
-
-    [Parameter]
-    public int IterationCount { get; set; }
-
-    [JSInvokable("OnAnimationEnd")]
-    public async void AnimationEnd()
+    public int IterationCount
     {
-        await _animationEnd.InvokeAsync(this);
+        get => _iterationCount < 0 ? int.MaxValue : _iterationCount;
+        set => _iterationCount = value;
     }
 
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; }
+
+    [JSInvokable("OnAnimationEnd")]
+    public async void AnimationEnd() => await _animationEnd.InvokeAsync(this);
+
     private EventCallback _animationEnd;
+    private int _iterationCount = 1;
 
     [CascadingParameter(Name = "OnAnimationEnd")]
     public EventCallback CascadingOnAnimationEnd
@@ -57,12 +63,16 @@
     {
         set => _animationEnd = value;
     }
+
+    private void ApplyConfiguration()
+    {
+        var options = OptionsSnapshot.Get(OptionsName);
+        if (options == null) return;
+        Effect = options.Effect ?? Effect;
+        Delay = options.Delay ?? Delay;
+        Speed = options.Speed ?? Speed;
+        IterationCount = options.IterationCont ?? IterationCount;
+        Enabled = options.Enabled ?? Enabled;
+    }
 }
 
-<style>
-    .customAnimation {
-        @($"animation-duration: {Speed.TotalMilliseconds}ms;" +
-        $"animation-delay : {Delay.TotalMilliseconds}ms;" +
-        $"animation-iteration-count: {IterationCount};");
-    }
-</style>

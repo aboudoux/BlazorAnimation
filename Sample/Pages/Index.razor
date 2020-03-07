@@ -1,48 +1,222 @@
 ﻿@page "/"
+@using System.ComponentModel
 @using System.Reflection
+@using System.Runtime.CompilerServices
+@using Sample.Annotations
+@implements IDisposable
 
-<Animation
-    Active="IsActive"
-    Effect="@SelectedEffectType"
-    Speed="@Speed.Slow"
-    Delay="@Delay.Zero"
-    OnAnimationEnd="End">
-    <h1>Blazor Animation !</h1>
+<Animation Enabled="IsActive"
+           Effect="@SelectedEffect"
+           Speed="@SelectedSpeed"
+           Delay="@SelectedDelay"
+           IterationCount="@SelectedIterationCount"
+           OnAnimationEnd="End">
+    <h1 class="text-center">Blazor Animation !</h1>
 </Animation>
 
 <EditForm Model="@Model" OnSubmit="Submit">
-    <InputSelect @bind-Value="Model.Type">
+    <form class="form-group">
+        <label for="effect">Effect</label>
+        <InputSelect @bind-Value="Model.Effect" class="form-control" id="effect">
 
-        @foreach (var member in typeof(Effect).GetProperties(System.Reflection.BindingFlags.Static | BindingFlags.Public)) {
-            var cssClass = member.GetValue(null) as CssEffect;
-            <option value="@cssClass.Name">@member.Name</option>
-        }
+            @foreach (var member in typeof(Effect).GetProperties(BindingFlags.Static | BindingFlags.Public)) {
+                var cssClass = member.GetValue(null) as AnimationEffect;
+                <option value="@cssClass.Name">@member.Name</option>
+            }
 
-    </InputSelect>
-    <button type="submit" class="btn btn-success">Play animation</button>
+        </InputSelect>
+    </form>
+
+    <form class="form-group">
+        <label for="delay">Delay @(ShowManualDelay ? "(in milliseconds)" : string.Empty)</label>
+        <div class="form-row">
+            <div class="col">
+
+                @if (ShowManualDelay) {
+
+                    <Animation Effect="@Effect.BounceInLeft" OptionsName="fast">
+                                <InputNumber @bind-Value="@Model.Delay2" class="form-control"></InputNumber>
+                    </Animation>
+
+                }
+                else {
+                <Animation Effect="@Effect.BounceInRight" OptionsName="fast" Enabled="@ShowManualDelayEnabled">
+                    <InputSelect @bind-Value="Model.Delay" class="form-control" id="delay">
+                        @foreach (var member in typeof(Delay).GetProperties(BindingFlags.Static | BindingFlags.Public)) {
+                                var cssClass = member.GetValue(null).ToString();
+                            <option value="@cssClass">@member.Name</option>
+                            }
+                        
+                    </InputSelect>
+            </Animation>
+                }
+
+            </div>
+            <div class="col">
+                <button class="btn btn-info" type="button" @onclick="@ShowManualDelayClicked">Swap</button>
+            </div>
+        </div>
+    </form>
+
+    <form class="form-group">
+        <label for="speed">Speed @(ShowManualSpeed ? "(in milliseconds)" : string.Empty)</label>
+        <div class="form-row">
+            <div class="col">
+
+                @if (ShowManualSpeed) {
+                    <Animation Effect="@Effect.BounceInLeft" OptionsName="fast">
+                                <InputNumber @bind-Value="@Model.Speed2" class="form-control"></InputNumber>
+                    </Animation>
+                }
+                else {
+                    <Animation Effect="@Effect.BounceInRight" OptionsName="fast" Enabled="@ShowManualSpeedEnabled">
+                        <InputSelect @bind-Value="Model.Speed" class="form-control" id="speed">
+                            @foreach (var member in typeof(Speed).GetProperties(BindingFlags.Static | BindingFlags.Public)) {
+                                var cssClass = member.GetValue(null).ToString();
+                                <option value="@cssClass">@member.Name</option>
+                            }
+                        </InputSelect>
+                    </Animation>
+                }
+            </div>
+            <div class="col">
+                <button class="btn btn-info" type="button" @onclick="@ShowManualSpeedClicked">Swap</button>
+            </div>
+        </div>
+    </form>
+    
+    <form class="form-group">
+        <label>Iteration count (if &#60; 0 = infinite)</label>
+        <InputNumber @bind-Value="@Model.IterationCount" class="form-control"></InputNumber>
+    </form>
+    
+    <div class="form-row">
+        <button type="submit" class="btn btn-dark form-control">Play</button>
+    </div>
+    
 </EditForm>
 
 @code
 {
 
-    private bool IsActive { get; set; } = true;
-    private CssEffect SelectedEffectType { get; set; } = new CssEffect("bounce");
-
-    private void End()
+    protected override void OnParametersSet()
     {
+        Model.PropertyChanged += OnChange;
+    }
+
+    private static string DefaultEffect = "bounce";
+    private static TimeSpan DefaultDelay = TimeSpan.Zero;
+    private static TimeSpan DefaultSpeed = Speed.Slow;
+    private static int DefaultIterationCount = 1;
+
+    private bool ShowManualDelay = false;
+    private bool ShowManualDelayEnabled = false;
+    private bool ShowManualSpeed = false;
+    private bool ShowManualSpeedEnabled = false;
+
+    protected void ShowManualDelayClicked()
+    {
+        ShowManualDelay = !ShowManualDelay;
+        ShowManualDelayEnabled = true;
+    }
+
+    protected void ShowManualSpeedClicked()
+    {
+        ShowManualSpeed = !ShowManualSpeed;
+        ShowManualSpeedEnabled = true;
+    }
+
+    private bool IsActive { get; set; } = true;
+    private AnimationEffect SelectedEffect { get; set; } = new AnimationEffect(DefaultEffect);
+
+    private TimeSpan SelectedDelay { get; set; } = DefaultDelay;
+    private TimeSpan SelectedSpeed { get; set; } = DefaultSpeed;
+    private int SelectedIterationCount { get; set; } = DefaultIterationCount;
+
+    private void End() {
         IsActive = false;
     }
 
-    private void Submit()
-    {
-        SelectedEffectType = new CssEffect(Model.Type);
+    private void Submit() {
+        SelectedEffect = new AnimationEffect(Model.Effect);
+        SelectedDelay = TimeSpan.Parse(Model.Delay);
+        SelectedSpeed = TimeSpan.Parse(Model.Speed);
+        SelectedIterationCount = Model.IterationCount;
         IsActive = true;
     }
 
-    public DemoModel Model = new DemoModel();
-
-    public class DemoModel
+    public DemoModel Model = new DemoModel(DefaultEffect, DefaultDelay.ToString(), DefaultSpeed.ToString(), DefaultIterationCount);
+    public class DemoModel : INotifyPropertyChanged
     {
-        public string Type { get; set; }
+        private string _effect;
+        private string _delay;
+        private string _speed;
+
+        public DemoModel(string effect, string delay, string speed, int iterationCount) {
+            Effect = effect;
+            Delay = delay;
+            Speed = speed;
+            IterationCount = iterationCount;
+        }
+
+        public int IterationCount { get; set; }
+
+        public string Effect
+        {
+            get => _effect;
+            set
+            {
+                _effect = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Delay
+        {
+            get => _delay;
+            set
+            {
+                _delay = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Speed
+        {
+            get => _speed;
+            set
+            {
+                _speed = value; 
+                OnPropertyChanged();
+            }
+        }
+
+
+        public int Delay2
+        {
+            get => (int) TimeSpan.Parse(Delay).TotalMilliseconds;
+            set => Delay = TimeSpan.FromMilliseconds(value).ToString();
+        }
+
+        public int Speed2
+        {
+            get => (int) TimeSpan.Parse(Speed).TotalMilliseconds;
+            set => Speed = TimeSpan.FromMilliseconds(value).ToString();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    private void OnChange(object sender, object args) => Submit();
+
+    public void Dispose()
+    {
+        Model.PropertyChanged -= OnChange;
     }
 }
