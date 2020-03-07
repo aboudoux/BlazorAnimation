@@ -1,0 +1,48 @@
+﻿@page "/"
+@using System.Reflection
+
+<Animation
+    Active="IsActive"
+    Effect="@SelectedEffectType"
+    Speed="@Speed.Slow"
+    Delay="@Delay.Zero"
+    OnAnimationEnd="End">
+    <h1>Blazor Animation !</h1>
+</Animation>
+
+<EditForm Model="@Model" OnSubmit="Submit">
+    <InputSelect @bind-Value="Model.Type">
+
+        @foreach (var member in typeof(Effect).GetProperties(System.Reflection.BindingFlags.Static | BindingFlags.Public)) {
+            var cssClass = member.GetValue(null) as CssEffect;
+            <option value="@cssClass.Name">@member.Name</option>
+        }
+
+    </InputSelect>
+    <button type="submit" class="btn btn-success">Play animation</button>
+</EditForm>
+
+@code
+{
+
+    private bool IsActive { get; set; } = true;
+    private CssEffect SelectedEffectType { get; set; } = new CssEffect("bounce");
+
+    private void End()
+    {
+        IsActive = false;
+    }
+
+    private void Submit()
+    {
+        SelectedEffectType = new CssEffect(Model.Type);
+        IsActive = true;
+    }
+
+    public DemoModel Model = new DemoModel();
+
+    public class DemoModel
+    {
+        public string Type { get; set; }
+    }
+}
