@@ -135,6 +135,7 @@
 
     private void End() {
         IsActive = false;
+        StateHasChanged();
     }
 
     private void Submit() {
@@ -143,6 +144,7 @@
         SelectedSpeed = TimeSpan.Parse(Model.Speed);
         SelectedIterationCount = Model.IterationCount;
         IsActive = true;
+        StateHasChanged();
     }
 
     public DemoModel Model = new DemoModel(DefaultEffect, DefaultDelay.ToString(), DefaultSpeed.ToString(), DefaultIterationCount);

@@ -176,7 +176,8 @@ Example
     private void AnimationEnd() => RunAnimation = false;
 }
 ```
-This property can be accessed with a cascading parameter.
+This property can be accessed with ```CascadingValue```
+
 For example, imagine you create an ```InputPassword``` component like this :
 ```
     <Animation Effect="@Effect.Shake" Speed="@Speed.Fast" Enabled="@Shake">
@@ -213,7 +214,7 @@ The expected behavior is to shake the input when the password is wrong. But when
 The best way to resolve this issue is to pass the ```NotifyBadPassword ``` to false when the animation end. This can be achieved with a cascading value like this :
 
 ```
-<CascadingValue Name="OnAnimationEnd" Value="AnimationEnd" TValue="Action">
+<CascadingValue Name="OnAnimationEnd" Value="@EventCallback.Factory.Create(this,AnimationEnd)">
   <InputPassword @ref="inputPassword" Shake="@NotifyBadPassword" />
 </CascadingValue>
 <button @onclick="OkClicked">OK</button>
@@ -230,8 +231,7 @@ The best way to resolve this issue is to pass the ```NotifyBadPassword ``` to fa
 
 	private void AnimationEnd()
 	{
-	    NotifyBadPassword = false;
-	    StateHasChanged();
+	    NotifyBadPassword = false;	    
 	}
 }
 ```

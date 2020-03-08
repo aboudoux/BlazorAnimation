@@ -6,7 +6,7 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
-<CascadingValue Name="OnAnimationEnd" Value="AnimationEnd" TValue="Action">
+<CascadingValue Name="OnAnimationEnd" Value="@EventCallback.Factory.Create(this,AnimationEnd)">
     <InputPassword @ref="inputPassword" Shake="@NotifyBadPassword" />
 </CascadingValue>
 <button @onclick="OkClicked">OK</button>
@@ -26,7 +26,6 @@
     private void AnimationEnd()
     {
         NotifyBadPassword = false;
-        StateHasChanged();
     }
 
 
