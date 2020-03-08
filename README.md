@@ -2,7 +2,7 @@
 a Blazor component based on animate.css to easly animate your content
 
 
-![BlazorAnimation animation](BlazorAnimation.gif)
+![BlazorAnimation animation](BlazorAnimation2.gif)
 
 ## Quick Start
 
