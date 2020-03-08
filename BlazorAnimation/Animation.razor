@@ -47,19 +47,19 @@
     public Dictionary<string, object> AdditionalAttributes { get; set; }
 
     [JSInvokable("OnAnimationEnd")]
-    public async void AnimationEnd() => await _animationEnd.InvokeAsync(this);
+    public void AnimationEnd() => _animationEnd?.Invoke();
 
-    private EventCallback _animationEnd;
+    private Action _animationEnd;
     private int _iterationCount = 1;
 
     [CascadingParameter(Name = "OnAnimationEnd")]
-    public EventCallback CascadingOnAnimationEnd
+    private Action CascadingOnAnimationEnd
     {
         set => _animationEnd = value;
     }
 
     [Parameter]
-    public EventCallback OnAnimationEnd
+    public Action OnAnimationEnd
     {
         set => _animationEnd = value;
     }

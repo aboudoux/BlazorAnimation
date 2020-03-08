@@ -6,11 +6,33 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+<CascadingValue Name="OnAnimationEnd" Value="AnimationEnd" TValue="Action">
+    <InputPassword @ref="inputPassword" Shake="@NotifyBadPassword" />
+</CascadingValue>
+<button @onclick="OkClicked">OK</button>
+
+
 @code {
+
+    InputPassword inputPassword;
+    bool NotifyBadPassword = false;
+
+    private void OkClicked()
+    {
+        if (inputPassword.Password != "test")
+            NotifyBadPassword = true;
+    }
+
+    private void AnimationEnd()
+    {
+        NotifyBadPassword = false;
+        StateHasChanged();
+    }
+
+
     private int currentCount = 0;
 
-    private void IncrementCount()
-    {
+    private void IncrementCount() {
         currentCount++;
     }
 }

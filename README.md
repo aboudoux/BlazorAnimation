@@ -51,7 +51,7 @@ For a sample, please view http://blazoranimation.boudoux.fr
 
 ## Parameters
 
-Here are the parameters to configure to use the component
+Here's are the parameters to configure to use the component
 
 |Parameter Name| Abstract  | Default |
 |--|--|--|
@@ -59,8 +59,8 @@ Here are the parameters to configure to use the component
 | [Delay](https://github.com/aboudoux/BlazorAnimation/blob/master/README.md#delay) | The time to wait before the animation begin. | @Delay.None
 | [Speed](https://github.com/aboudoux/BlazorAnimation/blob/master/README.md#speed) | The total animation duration. | @Speed.Slow
 | [IterationCount](https://github.com/aboudoux/BlazorAnimation/blob/master/README.md#iterationcount) | the number of times the animation will be played. For an infinite loop, you can set a negative number. | 1
-| Enabled | You can enable or disable the animation component by code with this parameters. Very convenient in certain situations| True
-| OnAnimationEnd | Call a method when the animation end. | null
+| [Enabled](https://github.com/aboudoux/BlazorAnimation/blob/master/README.md#enabled) | You can enable or disable the animation component by code with this parameters. Very convenient in certain situations| True
+| [OnAnimationEnd](https://github.com/aboudoux/BlazorAnimation/blob/master/README.md#onanimationend) | Call a method when the animation end. | null
 
 ### Effect
 Define the effect to use for animate the component.
@@ -79,11 +79,11 @@ The time to wait before the animation begin.
 You can use one of the 6 predefined delay by using the `@Delay` enumeration that contains :
 
 - None
- - OneSecond
- - TwoSeconds
- - ThreeSeconds
- - FourSeconds
- - FiveSeconds
+- OneSecond
+- TwoSeconds
+- ThreeSeconds
+- FourSeconds
+- FiveSeconds
 
 Example :
 ```
@@ -143,4 +143,134 @@ Exemple with infinite loop :
 
 > Notice that an IterationCount defined to 0 do not play the animation.
 
-... to be continued
+### Enabled
+Provide a way to enable or disable animation by code. This can be useful for certain scenarios like animating based on events (mouse, keyboard, ...) or to react to actions in a flux architectural pattern.
+
+Example
+```
+<Animation Effect="@Effect.BounceOutUp" Enabled="RunAnimation">
+	<h1 @onmouseover="MouseOver" @onmouseout="MouseOut">Hello, world!</h1>
+</Animation>
+
+@code{
+
+    private bool RunAnimation = false;
+    private void MouseOver() => RunAnimation = true;
+    private void MouseOut() => RunAnimation = false;
+}
+```
+
+### OnAnimationEnd
+Call a method when the animation end.
+
+Example
+```
+ <Animation Effect="@Effect.BounceOutUp" Enabled="RunAnimation" Speed="@Speed.Slower" OnAnimationEnd="AnimationEnd">
+     <h1 @onmouseover="MouseOver" >Hello, world!</h1>
+ </Animation>
+
+@code{
+
+    private bool RunAnimation = false;
+    private void MouseOver() => RunAnimation = true;
+    private void AnimationEnd() => RunAnimation = false;
+}
+```
+This property can be accessed with a cascading parameter.
+For example, imagine you create an ```InputPassword``` component like this :
+```
+    <Animation Effect="@Effect.Shake" Speed="@Speed.Fast" Enabled="@Shake">
+        <input type="password" class="form-control" @bind-value="@Password" placeholder="Enter your password" />
+    </Animation>
+
+@code {
+
+    [Parameter]
+    public bool Shake { get; set; }
+    public string Password { get; set; }
+}
+```
+and you use it in a page :
+
+```
+<InputPassword @ref="inputPassword" Shake="NotifyBadPassword" />
+<button @onclick="OkClicked">OK</button>
+
+@code {
+    InputPassword inputPassword;
+    bool NotifyBadPassword = false;
+    private void OkClicked()
+    {
+        if (inputPassword.Password != "test")
+            NotifyBadPassword = true;
+    }
+}
+```
+The expected behavior is to shake the input when the password is wrong. But when you run the application, you notice that the animation run only the first time.
+
+![InputPassword animation](inputpassword1.gif)
+
+The best way to resolve this issue is to pass the ```NotifyBadPassword ``` to false when the animation end. This can be achieved with a cascading value like this :
+
+```
+<CascadingValue Name="OnAnimationEnd" Value="AnimationEnd" TValue="Action">
+  <InputPassword @ref="inputPassword" Shake="@NotifyBadPassword" />
+</CascadingValue>
+<button @onclick="OkClicked">OK</button>
+
+@code {
+	InputPassword inputPassword;
+	bool NotifyBadPassword = false;
+
+	private void OkClicked()
+	{
+	    if (inputPassword.Password != "test")
+	        NotifyBadPassword = true;
+	}
+
+	private void AnimationEnd()
+	{
+	    NotifyBadPassword = false;
+	    StateHasChanged();
+	}
+}
+```
+![InputPassword2 animation](inputpassword2.gif)
+
+## Named configurations
+
+BlazorAnimation supports named animation settings through the ASP.NET Core's named options. Here's an example where two configurations are provided, one without a name (the defaults) and one with a name:
+
+```
+services.Configure<AnimationOptions>("bounce", o =>
+{
+	o.Effect = Effect.BounceInLeft;
+	o.Speed = Speed.Faster;
+	o.Delay = TimeSpan.FromMilliseconds(200);
+	o.IterationCont = 2;
+});
+
+services.Configure<AnimationOptions>(o => {
+	o.Effect = Effect.FadeOutDown;
+	o.Speed = Speed.Slow;
+});
+```
+
+To use a named configuration, provide the OptionsName parameter:
+
+```
+<Animation OptionsName="bounce">
+    <h1>Hello, world!</h1>
+</Animation>
+```
+## Authors
+
+BlazorAnimation is created by [Aurelien BOUDOUX](http://aurelien.boudoux.fr).
+
+Contributions are welcome!
+
+## License
+
+BlazorAnimation is MIT licensed. The library uses the following other libraries:
+
+* [Animate.css](https://github.com/daneden/animate.css): MIT-license

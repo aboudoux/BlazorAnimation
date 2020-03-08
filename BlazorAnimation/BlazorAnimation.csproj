@@ -3,6 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
+    <Version>1.0.1</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Aurelien BOUDOUX</Authors>
+    <Description>a Blazor component based on animate.css to easly animate your content</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/aboudoux/BlazorAnimation</PackageProjectUrl>
+    <PackageIcon>BlazorAnimation.png</PackageIcon>
+    <PackageIconUrl />
+    <PackageReleaseNotes>Update OnAnimationEnd for CascadingValue</PackageReleaseNotes>
+    <PackageTags>Blazor Animation Animate C#</PackageTags>
   </PropertyGroup>
 
 
@@ -19,6 +29,14 @@
     <Content Update="wwwroot\blazorAnimationInterop.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="..\BlazorAnimation.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
