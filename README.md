@@ -51,7 +51,7 @@ For a sample, please view http://blazoranimation.boudoux.fr
 
 ## Parameters
 
-Here's are the parameters to configure to use the component
+Here's are the parameters to configure the component
 
 |Parameter Name| Abstract  | Default |
 |--|--|--|
