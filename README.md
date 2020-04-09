@@ -247,7 +247,7 @@ services.Configure<AnimationOptions>("bounce", o =>
 	o.Effect = Effect.BounceInLeft;
 	o.Speed = Speed.Faster;
 	o.Delay = TimeSpan.FromMilliseconds(200);
-	o.IterationCont = 2;
+	o.IterationCount = 2;
 });
 
 services.Configure<AnimationOptions>(o => {
