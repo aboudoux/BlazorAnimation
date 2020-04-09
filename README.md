@@ -37,6 +37,12 @@ Install-Package BlazorAnimation
    <script src="_content/BlazorAnimation/blazorAnimationInterop.js"></script>
 ```
 
+#### If you notice any error in blazor wasm, add a configuration in program.cs
+```
+...
+builder.Services.Configure<AnimationOptions>(Guid.NewGuid().ToString(),c=>{});
+```
+
 #### Use the Animation component
 
 ```
