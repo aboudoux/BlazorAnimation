@@ -21,7 +21,10 @@
 
             @foreach (var member in typeof(Effect).GetProperties(BindingFlags.Static | BindingFlags.Public)) {
                 var cssClass = member.GetValue(null) as AnimationEffect;
-                <option value="@cssClass.Name">@member.Name</option>
+                if (!CompatibilityEffects.Contains(@member.Name))
+                {
+                    <option value="@cssClass.Name">@member.Name</option>
+                }
             }
 
         </InputSelect>
@@ -103,6 +106,13 @@
     {
         Model.PropertyChanged += OnChange;
     }
+
+    private HashSet<string> CompatibilityEffects = new HashSet<string>()
+    {
+        nameof(Effect.Shake),
+        nameof(Effect.LightSpeedIn),
+        nameof(Effect.LightSpeedOut),
+    };
 
     private static string DefaultEffect = "bounce";
     private static TimeSpan DefaultDelay = TimeSpan.Zero;

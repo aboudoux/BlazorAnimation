@@ -20,9 +20,9 @@
 
     private ElementReference DivElementReference;
 
-    private string Animate => Enabled ? "animated" : string.Empty;
+    private string Animate => Enabled ? "animate__animated" : string.Empty;
 
-    private string AnimationType => Enabled ? Effect?.Name : string.Empty;
+    private string AnimationType => Enabled ? "animate__" + Effect?.Name : string.Empty;
 
     [Parameter] public RenderFragment ChildContent { get; set; }
 

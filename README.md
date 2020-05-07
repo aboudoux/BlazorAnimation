@@ -1,6 +1,6 @@
 # BlazorAnimation
-a Blazor component based on animate.css to easly animate your content
 
+a Blazor component based on animate.css to easly animate your content
 
 ![BlazorAnimation animation](BlazorAnimation2.gif)
 
@@ -71,7 +71,7 @@ Here's are the parameters to configure the component
 ### Effect
 Define the effect to use for animate the component.
 
-You can use one of the 77 animations provided by the [animate.css class](https://github.com/daneden/animate.css#animations). Just use the `@Effect` into the `Effect` parameters to list them all.
+You can use one of the 90 animations provided by the [animate.css class](https://animate.style/). Just use the `@Effect` into the `Effect` parameters to list them all.
 
 Example
 ```
@@ -280,3 +280,7 @@ Contributions are welcome!
 BlazorAnimation is MIT licensed. The library uses the following other libraries:
 
 * [Animate.css](https://github.com/daneden/animate.css): MIT-license
+
+## ChangeLog
+
+7 may 2020 - v2.0.0 : Upgrade to animate.css v4
