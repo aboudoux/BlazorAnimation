@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
-    <Version>1.0.3</Version>
+    <Version>2.0.0</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>Aurelien BOUDOUX</Authors>
     <Description>a Blazor component based on animate.css to easly animate your content</Description>
@@ -11,7 +11,7 @@
     <PackageProjectUrl>https://github.com/aboudoux/BlazorAnimation</PackageProjectUrl>
     <PackageIcon>BlazorAnimation.png</PackageIcon>
     <PackageIconUrl />
-    <PackageReleaseNotes>Using EventCallback for OnAnimationEnd</PackageReleaseNotes>
+    <PackageReleaseNotes>Upgrade to animate.css v4</PackageReleaseNotes>
     <PackageTags>Blazor Animation Animate Html Content</PackageTags>
   </PropertyGroup>
 

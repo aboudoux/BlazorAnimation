@@ -5,7 +5,9 @@
 		public static AnimationEffect Flash => new AnimationEffect("flash");
 		public static AnimationEffect Pulse => new AnimationEffect("pulse");
 		public static AnimationEffect RubberBand => new AnimationEffect("rubberBand");
-		public static AnimationEffect Shake => new AnimationEffect("shake");
+		public static AnimationEffect Shake => ShakeX; // v3.7.2 compatibility
+		public static AnimationEffect ShakeX => new AnimationEffect("shakeX");
+		public static AnimationEffect ShakeY => new AnimationEffect("shakeY");
 		public static AnimationEffect HeadShake => new AnimationEffect("headShake");
 		public static AnimationEffect Swing => new AnimationEffect("swing");
 		public static AnimationEffect Tada => new AnimationEffect("tada");
@@ -43,8 +45,12 @@
 		public static AnimationEffect FlipInY => new AnimationEffect("flipInY");
 		public static AnimationEffect FlipOutX => new AnimationEffect("flipOutX");
 		public static AnimationEffect FlipOutY => new AnimationEffect("flipOutY");
-		public static AnimationEffect LightSpeedIn => new AnimationEffect("lightSpeedIn");
-		public static AnimationEffect LightSpeedOut => new AnimationEffect("lightSpeedOut");
+		public static AnimationEffect LightSpeedIn => LightSpeedInRight; // v3.7.2 compatibility
+		public static AnimationEffect LightSpeedOut => LightSpeedOutRight; // v3.7.2 compatibility
+		public static AnimationEffect LightSpeedInRight => new AnimationEffect("lightSpeedInRight");
+		public static AnimationEffect LightSpeedInLeft => new AnimationEffect("lightSpeedInLeft");
+		public static AnimationEffect LightSpeedOutRight => new AnimationEffect("lightSpeedOutRight");
+		public static AnimationEffect LightSpeedOutLeft => new AnimationEffect("lightSpeedOutLeft");
 		public static AnimationEffect RotateIn => new AnimationEffect("rotateIn");
 		public static AnimationEffect RotateInDownLeft => new AnimationEffect("rotateInDownLeft");
 		public static AnimationEffect RotateInDownRight => new AnimationEffect("rotateInDownRight");
@@ -78,6 +84,18 @@
 		public static AnimationEffect SlideOutRight => new AnimationEffect("slideOutRight");
 		public static AnimationEffect SlideOutUp => new AnimationEffect("slideOutUp");
 		public static AnimationEffect HeartBeat => new AnimationEffect("heartBeat");
+		public static AnimationEffect FadeInTopLeft => new AnimationEffect("fadeInTopLeft");
+		public static AnimationEffect FadeInTopRight => new AnimationEffect("fadeInTopRight");
+		public static AnimationEffect FadeInBottomLeft => new AnimationEffect("fadeInBottomLeft");
+		public static AnimationEffect FadeInBottomRight => new AnimationEffect("fadeInBottomRight");
+		public static AnimationEffect FadeOutTopLeft => new AnimationEffect("fadeOutTopLeft");
+		public static AnimationEffect FadeOutTopRight => new AnimationEffect("fadeOutTopRight");
+		public static AnimationEffect FadeOutBottomRight => new AnimationEffect("fadeOutBottomRight");
+		public static AnimationEffect FadeOutBottomLeft => new AnimationEffect("fadeOutBottomLeft");
+		public static AnimationEffect BackOutDown => new AnimationEffect("backOutDown");
+		public static AnimationEffect BackOutLeft => new AnimationEffect("backOutLeft");
+		public static AnimationEffect BackOutRight => new AnimationEffect("backOutRight");
+		public static AnimationEffect BackOutUp => new AnimationEffect("backOutUp");
 	}
 
 	public class AnimationEffect : CssClass
