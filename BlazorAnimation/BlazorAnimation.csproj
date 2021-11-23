@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
-    <Version>2.0.0</Version>
+    <Version>2.1.0</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>Aurelien BOUDOUX</Authors>
     <Description>a Blazor component based on animate.css to easly animate your content</Description>

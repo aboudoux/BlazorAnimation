@@ -67,6 +67,8 @@ Here's are the parameters to configure the component
 | [IterationCount](https://github.com/aboudoux/BlazorAnimation/blob/master/README.md#iterationcount) | the number of times the animation will be played. For an infinite loop, you can set a negative number. | 1
 | [Enabled](https://github.com/aboudoux/BlazorAnimation/blob/master/README.md#enabled) | You can enable or disable the animation component by code with this parameters. Very convenient in certain situations| True
 | [OnAnimationEnd](https://github.com/aboudoux/BlazorAnimation/blob/master/README.md#onanimationend) | Call a method when the animation end. | null
+| Class | Append some css classes to the component | string.Empty
+| Style | Append some css styles to the component | string.Empty
 
 ### Effect
 Define the effect to use for animate the component.
@@ -283,4 +285,9 @@ BlazorAnimation is MIT licensed. The library uses the following other libraries:
 
 ## ChangeLog
 
-7 may 2020 - v2.0.0 : Upgrade to animate.css v4
+2 december 2021 - v2.1.0 
+- Add `Class` and `Style` Attributes
+- `Effect` can be compared by using equal sign (==)
+
+7 may 2020 - v2.0.0 
+- Upgrade to animate.css v4
