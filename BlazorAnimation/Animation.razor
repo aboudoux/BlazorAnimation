@@ -3,7 +3,7 @@
 @inject IJSRuntime JsRuntime
 @inject IOptionsSnapshot<AnimationOptions> OptionsSnapshot
 
-<div @ref="DivElementReference" class="@Animate @AnimationType" @attributes="@AdditionalAttributes" style="@($"animation-duration: {Speed.TotalMilliseconds}ms;animation-delay : {Delay.TotalMilliseconds}ms;animation-iteration-count: {IterationCount};");">
+<div @ref="DivElementReference" class="@Animate @AnimationType @Class" @attributes="@AdditionalAttributes" style="@($"animation-duration: {Speed.TotalMilliseconds}ms;animation-delay : {Delay.TotalMilliseconds}ms;animation-iteration-count: {IterationCount};"); @Style">
     @ChildContent
 </div>
 
@@ -35,6 +35,10 @@
     [Parameter] public TimeSpan Delay { get; set; } = BlazorAnimation.Delay.None;
 
     [Parameter] public TimeSpan Speed { get; set; } = BlazorAnimation.Speed.Slow;
+
+    [Parameter] public string Class { get; set; } = string.Empty;
+
+    [Parameter] public string Style { get; set; } = string.Empty;
 
     [Parameter]
     public int IterationCount
