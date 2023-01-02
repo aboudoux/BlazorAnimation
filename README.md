@@ -285,9 +285,12 @@ BlazorAnimation is MIT licensed. The library uses the following other libraries:
 
 ## ChangeLog
 
-2 december 2021 - v2.1.0 
+2 january 2023 - v 2.2
+- `OnAnimationEnd` is triggered for element only
+
+2 december 2021 - v 2.1 
 - Add `Class` and `Style` Attributes
 - `Effect` can be compared by using equal sign (==)
 
-7 may 2020 - v2.0.0 
+7 may 2020 - v 2.0
 - Upgrade to animate.css v4
