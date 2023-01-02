@@ -6,5 +6,7 @@ document.getElementsByTagName("head")[0].insertAdjacentHTML(
 
 var AnimatedComponent = AnimatedComponent || {};
 AnimatedComponent.animationend = function (element, dotNet) {
-    element.addEventListener('animationend', function () { dotNet.invokeMethodAsync("OnAnimationEnd") });
+    element.addEventListener('animationend', function(e) {
+        if(e.target === this)dotNet.invokeMethodAsync("OnAnimationEnd") 
+    });
 };
