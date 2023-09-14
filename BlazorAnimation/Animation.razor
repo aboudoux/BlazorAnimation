@@ -26,15 +26,26 @@
 
     [Parameter] public RenderFragment ChildContent { get; set; }
 
-    [Parameter] public bool Enabled { get; set; } = true;
+    [Parameter] public bool Enabled
+    {
+        get => _enabled ?? true;
+        set => _enabled = value;
+    }
 
     [Parameter] public string OptionsName { get; set; } = Options.DefaultName;
 
     [Parameter] public AnimationEffect Effect { get; set; }
 
-    [Parameter] public TimeSpan Delay { get; set; } = BlazorAnimation.Delay.None;
+    [Parameter] public TimeSpan Delay {
+      get => _delay ?? BlazorAnimation.Delay.None;
+      set => _delay = value;
+    }
 
-    [Parameter] public TimeSpan Speed { get; set; } = BlazorAnimation.Speed.Slow;
+    [Parameter] public TimeSpan Speed
+    {
+      get => _speed ?? BlazorAnimation.Speed.Slow;
+      set => _speed = value;
+    }
 
     [Parameter] public string Class { get; set; } = string.Empty;
 
@@ -43,7 +54,9 @@
     [Parameter]
     public int IterationCount
     {
-        get => _iterationCount < 0 ? int.MaxValue : _iterationCount;
+        get => _iterationCount is null
+                    ? 1
+                    : _iterationCount < 0 ? int.MaxValue : _iterationCount.Value;
         set => _iterationCount = value;
     }
 
@@ -54,7 +67,10 @@
     public async void AnimationEnd() => await _animationEnd.InvokeAsync(this);
 
     private EventCallback _animationEnd;
-    private int _iterationCount = 1;
+    private int? _iterationCount;
+    private bool? _enabled;
+    private TimeSpan? _speed;
+    private TimeSpan? _delay;
 
     [CascadingParameter(Name = "OnAnimationEnd")]
     private EventCallback CascadingOnAnimationEnd
@@ -72,11 +88,15 @@
     {
         var options = OptionsSnapshot.Get(OptionsName);
         if (options == null) return;
-        Effect = options.Effect ?? Effect;
-        Delay = options.Delay ?? Delay;
-        Speed = options.Speed ?? Speed;
-        IterationCount = options.IterationCount ?? IterationCount;
-        Enabled = options.Enabled ?? Enabled;
+        Effect ??= options.Effect;
+        if (options.Delay is not null && Delay == BlazorAnimation.Delay.None)
+            Delay = options.Delay.Value;
+        if (options.Speed is not null && Speed == BlazorAnimation.Speed.Slow)
+            Speed = options.Speed.Value;
+        if (options.IterationCount is not null && _iterationCount is null)
+            IterationCount = options.IterationCount.Value;
+        if (options.Enabled is not null && _enabled is null)
+            Enabled = options.Enabled.Value;
     }
 }
 
